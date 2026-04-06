@@ -1,6 +1,27 @@
 (function() {
     'use strict';
 
+    // ── GSAP + Lenis init (Phase 1) ──
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+    }
+
+    let lenis = null;
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+        });
+        if (typeof ScrollTrigger !== 'undefined') {
+            lenis.on('scroll', ScrollTrigger.update);
+        }
+        gsap.ticker.add((time) => lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+        // Expose globally for nav anchor scrolling
+        window.stroniarzLenis = lenis;
+    }
+
     // ── Logo typewriter ──
     const logoEl = document.getElementById('logoText');
     const logoName = 'Stroniarz.pl';
@@ -201,20 +222,22 @@
         });
     }
 
-    // ── Service items scroll-in ──
-    const serviceScrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('scrolled-in');
-                serviceScrollObserver.unobserve(entry.target);
+    // ── Service items scroll-in (GSAP) ──
+    if (typeof gsap !== 'undefined') {
+        gsap.set('.service-item', { opacity: 0, y: 60 });
+        gsap.to('.service-item', {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: '.services__list',
+                start: 'top 80%',
+                toggleActions: 'play none none none',
             }
         });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.service-item').forEach((item, i) => {
-        item.style.transitionDelay = (i * 0.12) + 's';
-        serviceScrollObserver.observe(item);
-    });
+    }
 
     // ── Service detail slide ──
     const servicesWrapper = document.getElementById('servicesWrapper');
@@ -367,16 +390,42 @@
 
     window.addEventListener('scroll', onDetailScroll, { passive: true });
 
-    // ── Scroll reveal (Intersection Observer) ──
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+    // ── Scroll reveal (GSAP ScrollTrigger) ──
+    if (typeof gsap !== 'undefined') {
+        document.querySelectorAll('.reveal').forEach((el) => {
+            // Read delay from class (.reveal-delay-1..4)
+            const delayMatch = el.className.match(/reveal-delay-(\d)/);
+            const delay = delayMatch ? parseInt(delayMatch[1], 10) * 0.1 : 0;
+            gsap.set(el, { opacity: 0, y: 50 });
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: delay,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 88%',
+                    toggleActions: 'play none none none',
+                }
+            });
+        });
+    }
+
+    // ── Hero parallax ──
+    if (typeof gsap !== 'undefined') {
+        gsap.to('.hero__content', {
+            yPercent: -25,
+            opacity: 0.4,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 0.5,
             }
         });
-    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
 
     // ── Nav scroll effect ──
     const nav = document.getElementById('nav');
@@ -387,30 +436,44 @@
         lastScroll = scrollY;
     }, { passive: true });
 
-    // ── Counter animation ──
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const el = entry.target;
-                const target = parseInt(el.dataset.target, 10);
-                let current = 0;
-                const duration = 2000;
-                const start = performance.now();
-
-                function step(now) {
-                    const progress = Math.min((now - start) / duration, 1);
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    current = Math.round(eased * target);
-                    el.textContent = current + '+';
-                    if (progress < 1) requestAnimationFrame(step);
+    // ── Counter animation (GSAP ScrollTrigger) ──
+    if (typeof gsap !== 'undefined') {
+        document.querySelectorAll('.stat__number').forEach((el) => {
+            const target = parseInt(el.dataset.target, 10);
+            const obj = { val: 0 };
+            ScrollTrigger.create({
+                trigger: el,
+                start: 'top 80%',
+                once: true,
+                onEnter: () => {
+                    gsap.to(obj, {
+                        val: target,
+                        duration: 2,
+                        ease: 'power3.out',
+                        onUpdate: () => {
+                            el.textContent = Math.round(obj.val) + '+';
+                        }
+                    });
                 }
-                requestAnimationFrame(step);
-                counterObserver.unobserve(el);
-            }
+            });
         });
-    }, { threshold: 0.5 });
+    }
 
-    document.querySelectorAll('.stat__number').forEach(el => counterObserver.observe(el));
+    // ── Anchor links smooth scroll via Lenis ──
+    if (lenis) {
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+            a.addEventListener('click', (e) => {
+                const href = a.getAttribute('href');
+                if (href && href.length > 1) {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        lenis.scrollTo(target, { offset: -80 });
+                    }
+                }
+            });
+        });
+    }
 
     // ── Mobile menu ──
     const burger = document.getElementById('burger');
