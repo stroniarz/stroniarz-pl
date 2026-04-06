@@ -1,0 +1,180 @@
+/* ── HERO ── */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+}
+
+.hero__content {
+    max-width: 900px;
+}
+
+.hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--cyan);
+    margin-bottom: 2.5rem;
+    background: rgba(0,229,255,0.05);
+    animation: badgePulse 3s ease-in-out infinite;
+}
+
+.hero__badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: dotBlink 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { border-color: rgba(0,229,255,0.2); }
+    50% { border-color: rgba(0,229,255,0.5); }
+}
+
+@keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.hero__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+}
+
+.hero__title .line {
+    display: block;
+    overflow: hidden;
+}
+
+.hero__title .line span {
+    display: inline-block;
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateY(110%);
+}
+
+.hero__title .line:nth-child(2) span { animation-delay: 0.15s; }
+
+.hero__title .gradient-text {
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--magenta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+               gradientShift 6s ease-in-out infinite;
+    transform: translateY(110%);
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.hero__sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeIn 1s 0.6s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(135deg, var(--violet), var(--magenta));
+    color: #fff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.3s;
+    opacity: 0;
+    animation: fadeIn 1s 0.8s forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero__cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    opacity: 0;
+    transition: opacity 0.4s;
+    border-radius: inherit;
+}
+
+.hero__cta:hover::before { opacity: 1; }
+.hero__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(124,58,237,0.3);
+}
+
+.hero__cta span { position: relative; z-index: 1; }
+.hero__cta .arrow {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s;
+}
+.hero__cta:hover .arrow { transform: translateX(4px); }
+
+.hero__scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+}
+
+.hero__scroll-hint span {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+.scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--violet), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+}

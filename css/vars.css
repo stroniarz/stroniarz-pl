@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'Barmeno';
+    src: url('../assets/fonts/barmeno-regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --bg-deep: #06060e;
+    --bg-surface: #0c0c1a;
+    --cyan: #00e5ff;
+    --violet: #7c3aed;
+    --indigo: #3b0764;
+    --magenta: #c026d3;
+    --text-primary: #e8e6f0;
+    --text-muted: #8b8a9e;
+    --text-dim: #4a4960;
+    --font-display: 'Barmeno', 'Manrope', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+}

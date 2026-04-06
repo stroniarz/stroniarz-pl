@@ -1,0 +1,71 @@
+/* ── CONTACT ── */
+.contact {
+    padding: 8rem 0;
+}
+
+.contact__heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+}
+
+.contact__sub {
+    color: var(--text-muted);
+    font-weight: 300;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+}
+
+.contact__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.contact-block {
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(12,12,26,0.4);
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.contact-block:hover {
+    border-color: rgba(0,229,255,0.15);
+    transform: translateY(-2px);
+}
+
+.contact-block__icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.contact-block__label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+}
+
+.contact-block__value {
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.contact-block__value a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.contact-block__value a:hover { color: var(--cyan); }
+
+.contact-block__extra {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+}

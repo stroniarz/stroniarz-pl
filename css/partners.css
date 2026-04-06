@@ -1,0 +1,69 @@
+/* ── PARTNERS ── */
+.partners {
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+}
+
+.partners__track {
+    display: flex;
+    gap: 3rem;
+    animation: ticker 25s linear infinite;
+    width: max-content;
+}
+
+.partners__track:hover { animation-play-state: paused; }
+
+@keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.partner-badge {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    background: rgba(12,12,26,0.5);
+    white-space: nowrap;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.partner-badge:hover {
+    border-color: rgba(0,229,255,0.2);
+    background: rgba(0,229,255,0.03);
+}
+
+.partner-badge__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.partner-badge__icon--google { background: linear-gradient(135deg, #4285f4, #34a853); }
+.partner-badge__icon--cookiebot { background: linear-gradient(135deg, #1a8c38, #28b84c); }
+.partner-badge__icon--shoper { background: linear-gradient(135deg, #0066cc, #0099ff); }
+.partner-badge__icon--shopify { background: linear-gradient(135deg, #7ab55c, #95bf47); }
+
+.partner-badge__text {
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+}
+
+.partner-badge__label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
