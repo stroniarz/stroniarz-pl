@@ -351,14 +351,18 @@
     }
 
     function openDetail(idx) {
-        document.querySelectorAll('.service-detail').forEach(d => d.classList.remove('active-detail'));
+        const previousDetail = document.querySelector('.service-detail.active-detail');
         const detail = document.getElementById('serviceDetail-' + idx);
         if (!detail) { closeDetail(); return; }
+
+        // Switch active detail
+        document.querySelectorAll('.service-detail').forEach(d => d.classList.remove('active-detail'));
         detail.classList.add('active-detail');
         servicesWrapper.classList.add('detail-open');
         document.body.classList.add('detail-mode');
         activeDetail = idx;
 
+        // Background fade
         if (detailBgs[idx]) {
             serviceFullBg.style.backgroundImage = 'url(' + detailBgs[idx] + ')';
             serviceFullBg.classList.add('active');
@@ -368,10 +372,27 @@
 
         document.getElementById('uslugi').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+        // GSAP staggered children entrance
+        if (typeof gsap !== 'undefined') {
+            const children = detail.querySelectorAll(':scope > *');
+            gsap.fromTo(children,
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    stagger: 0.08,
+                    ease: 'power3.out',
+                    delay: 0.15,
+                    clearProps: 'transform',
+                }
+            );
+        }
+
         // Scramble the title after slide-in
         const title = detail.querySelector('.service-detail__title');
         if (title) {
-            setTimeout(() => scrambleText(title, { stagger: 0.025, scrambleDuration: 350 }), 500);
+            setTimeout(() => scrambleText(title, { stagger: 0.025, scrambleDuration: 350 }), 600);
         }
     }
 
