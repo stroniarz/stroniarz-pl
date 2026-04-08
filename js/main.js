@@ -22,6 +22,67 @@
         window.stroniarzLenis = lenis;
     }
 
+    // ── Text scramble animator (Phase 2) ──
+    const SCRAMBLE_CHARS = '!<>-_\\/[]{}—=+*^?#________ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+    function scrambleText(el, options) {
+        if (!el) return;
+        options = options || {};
+        const stagger = options.stagger || 0.025;
+        const scrambleDuration = options.scrambleDuration || 350;
+
+        // Use SplitType if available, fallback to manual char split
+        let chars;
+        if (typeof SplitType !== 'undefined') {
+            const split = new SplitType(el, { types: 'chars' });
+            chars = split.chars;
+        } else {
+            const text = el.textContent;
+            el.textContent = '';
+            chars = [];
+            text.split('').forEach((c) => {
+                const span = document.createElement('span');
+                span.textContent = c;
+                span.style.display = 'inline-block';
+                el.appendChild(span);
+                chars.push(span);
+            });
+        }
+
+        chars.forEach((char, i) => {
+            const original = char.textContent;
+            if (original === ' ' || original === '\u00a0') return;
+            char.dataset.original = original;
+            const startDelay = i * stagger * 1000;
+            const interval = setInterval(() => {
+                char.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+            }, 40);
+            setTimeout(() => {
+                char.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+            }, startDelay);
+            setTimeout(() => {
+                clearInterval(interval);
+                char.textContent = original;
+            }, startDelay + scrambleDuration);
+        });
+    }
+
+    function initScrambleHeadings() {
+        if (typeof gsap === 'undefined') return;
+        const targets = document.querySelectorAll('[data-scramble]');
+        targets.forEach((el) => {
+            ScrollTrigger.create({
+                trigger: el,
+                start: 'top 88%',
+                once: true,
+                onEnter: () => scrambleText(el, { stagger: 0.025, scrambleDuration: 400 }),
+            });
+        });
+    }
+
+    // Run after a short delay so SplitType has time to load
+    setTimeout(initScrambleHeadings, 100);
+
     // ── Logo typewriter ──
     const logoEl = document.getElementById('logoText');
     const logoName = 'Stroniarz.pl';
@@ -306,6 +367,12 @@
         }
 
         document.getElementById('uslugi').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Scramble the title after slide-in
+        const title = detail.querySelector('.service-detail__title');
+        if (title) {
+            setTimeout(() => scrambleText(title, { stagger: 0.025, scrambleDuration: 350 }), 500);
+        }
     }
 
     document.querySelectorAll('[data-close-detail]').forEach(btn => {
