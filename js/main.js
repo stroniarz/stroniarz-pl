@@ -511,4 +511,108 @@
         }, { passive: true });
     }
 
+    // ── Portfolio carousel ──
+    (function initPortfolio() {
+        const carousel = document.getElementById('portfolioCarousel');
+        const track = document.getElementById('portfolioTrack');
+        if (!carousel || !track) return;
+
+        const cards = track.querySelectorAll('.portfolio__card');
+        const prevBtn = document.getElementById('portfolioPrev');
+        const nextBtn = document.getElementById('portfolioNext');
+        const currentEl = document.getElementById('portfolioCurrent');
+        const totalEl = document.getElementById('portfolioTotal');
+
+        if (cards.length === 0) return;
+
+        let currentIndex = 0;
+        let cardWidth = 0;
+        let maxIndex = 0;
+
+        function calcDimensions() {
+            const card = cards[0];
+            const style = getComputedStyle(track);
+            const gap = parseFloat(style.gap) || 24;
+            cardWidth = card.offsetWidth + gap;
+            const visibleCards = Math.max(1, Math.floor(carousel.offsetWidth / cardWidth));
+            maxIndex = Math.max(0, cards.length - visibleCards);
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentIndex <= 0;
+            nextBtn.disabled = currentIndex >= maxIndex;
+        }
+
+        function goTo(index) {
+            currentIndex = Math.max(0, Math.min(index, maxIndex));
+            const x = -currentIndex * cardWidth;
+            if (typeof gsap !== 'undefined') {
+                gsap.to(track, {
+                    x: x,
+                    duration: 0.9,
+                    ease: 'power3.out',
+                });
+            } else {
+                track.style.transform = `translateX(${x}px)`;
+            }
+            currentEl.textContent = String(currentIndex + 1).padStart(2, '0');
+            updateButtons();
+        }
+
+        totalEl.textContent = String(cards.length).padStart(2, '0');
+        calcDimensions();
+        updateButtons();
+
+        prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+        nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+
+        // Drag/swipe support
+        let isDown = false;
+        let startX = 0;
+        let dragMoved = false;
+
+        carousel.addEventListener('pointerdown', (e) => {
+            isDown = true;
+            dragMoved = false;
+            startX = e.clientX;
+            carousel.classList.add('dragging');
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            if (!isDown) return;
+            isDown = false;
+            carousel.classList.remove('dragging');
+            if (dragMoved) {
+                const diff = e.clientX - startX;
+                if (Math.abs(diff) > 60) {
+                    goTo(currentIndex + (diff < 0 ? 1 : -1));
+                }
+            }
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isDown) return;
+            if (Math.abs(e.clientX - startX) > 8) dragMoved = true;
+        });
+
+        // Recalculate on resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                calcDimensions();
+                goTo(currentIndex);
+            }, 200);
+        });
+
+        // Keyboard navigation when carousel is in view
+        document.addEventListener('keydown', (e) => {
+            const rect = carousel.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight && rect.bottom > 0;
+            if (!inView) return;
+            if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
+            if (e.key === 'ArrowRight') goTo(currentIndex + 1);
+        });
+    })();
+
 })();
