@@ -22,6 +22,73 @@
         window.stroniarzLenis = lenis;
     }
 
+    // ── Preloader (Phase 5) ──
+    (function initPreloader() {
+        const preloader = document.getElementById('preloader');
+        const grid = document.getElementById('preloaderGrid');
+        const bar = document.getElementById('preloaderBar');
+        if (!preloader || !grid) return;
+
+        const COLS = 16;
+        const ROWS = 9;
+        const cells = [];
+        for (let i = 0; i < COLS * ROWS; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'preloader__cell';
+            grid.appendChild(cell);
+            cells.push(cell);
+        }
+
+        if (typeof gsap === 'undefined') {
+            // Fallback: just hide
+            preloader.style.display = 'none';
+            document.body.classList.remove('loading');
+            return;
+        }
+
+        const shuffled = [...cells].sort(() => Math.random() - 0.5);
+
+        const tl = gsap.timeline({
+            onComplete: () => {
+                preloader.style.pointerEvents = 'none';
+                document.body.classList.remove('loading');
+                setTimeout(() => preloader.remove(), 100);
+            }
+        });
+
+        // Phase 1: Random cells flash cyan/violet
+        tl.to(shuffled, {
+            background: () => Math.random() > 0.5 ? '#00e5ff' : '#7c3aed',
+            opacity: () => 0.2 + Math.random() * 0.5,
+            duration: 0.05,
+            stagger: { each: 0.005, from: 'random' },
+        });
+
+        // Bar fill in parallel
+        tl.to(bar, {
+            scaleX: 1,
+            duration: 1.2,
+            ease: 'power2.inOut',
+        }, 0);
+
+        // Brief hold
+        tl.to({}, { duration: 0.3 });
+
+        // Phase 2: Wipe out cells
+        tl.to([...shuffled].sort(() => Math.random() - 0.5), {
+            opacity: 0,
+            duration: 0.04,
+            stagger: { each: 0.004, from: 'random' },
+        });
+
+        // Phase 3: Fade preloader
+        tl.to(preloader, {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+        }, '-=0.2');
+    })();
+
     // ── Text scramble animator (Phase 2) ──
     const SCRAMBLE_CHARS = '!<>-_\\/[]{}—=+*^?#________ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 

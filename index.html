@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/about.css">
     <link rel="stylesheet" href="css/contact.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/preloader.css">
     <link rel="stylesheet" href="css/responsive.css">
 
     <!-- GSAP + Lenis (Phase 1) -->
@@ -28,7 +29,17 @@
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js" defer></script>
 </head>
-<body>
+<body class="loading">
+
+<!-- Preloader -->
+<div class="preloader" id="preloader">
+    <div class="preloader__grid" id="preloaderGrid"></div>
+    <div class="preloader__logo">
+        <span class="preloader__text" id="preloaderText">Stroniarz.pl</span>
+        <span class="preloader__sub">Wykorzystaj potencjał AI</span>
+    </div>
+    <div class="preloader__bar"><div class="preloader__bar-fill" id="preloaderBar"></div></div>
+</div>
 
 <!-- Background layers -->
 <div class="gradient-mesh">
