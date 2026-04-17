@@ -6,12 +6,18 @@
     pointer-events: none;
     z-index: 9998;
     will-change: transform;
+    mix-blend-mode: difference;
 }
 
 .custom-cursor svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 2px 8px rgba(73,137,225,0.4));
+    filter: drop-shadow(0 2px 8px rgba(0,229,255,0.4));
+}
+
+/* Cursor scale on hover over interactive elements */
+.custom-cursor.hovering {
+    transform: scale(1.5);
 }
 
 /* ── Cursor glow (desktop only) ── */

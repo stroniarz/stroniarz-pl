@@ -6,9 +6,35 @@
     justify-content: center;
     text-align: center;
     padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero__video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    z-index: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    filter: brightness(0.4) saturate(0.7);
+}
+
+.hero__video.loaded {
+    opacity: 1;
 }
 
 .hero__content {
+    position: relative;
+    z-index: 1;
     max-width: 900px;
 }
 

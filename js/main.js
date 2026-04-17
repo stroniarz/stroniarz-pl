@@ -22,6 +22,14 @@
         window.stroniarzLenis = lenis;
     }
 
+    // ── Hero video fade-in ──
+    const heroVideo = document.querySelector('.hero__video');
+    if (heroVideo) {
+        heroVideo.addEventListener('loadeddata', () => heroVideo.classList.add('loaded'));
+        // Fallback if already loaded
+        if (heroVideo.readyState >= 3) heroVideo.classList.add('loaded');
+    }
+
     // ── Preloader (Phase 5) ──
     (function initPreloader() {
         const preloader = document.getElementById('preloader');
@@ -227,6 +235,12 @@
             requestAnimationFrame(animateCursors);
         }
         animateCursors();
+
+        // Hover scale on interactive elements
+        document.querySelectorAll('a, button, .service-item, .portfolio__card, .partner-badge').forEach(el => {
+            el.addEventListener('mouseenter', () => customCursor.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => customCursor.classList.remove('hovering'));
+        });
     } else {
         glow.style.display = 'none';
         customCursor.style.display = 'none';
